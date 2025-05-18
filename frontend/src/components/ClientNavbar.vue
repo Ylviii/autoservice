@@ -1,41 +1,39 @@
 <template>
   <nav class="navbar">
-    <router-link to="/" class="logo">Автосервис</router-link>
-    <div class="nav-links">
-      <router-link to="/">Главная</router-link>
-      <router-link to="/request">Оформить заявку</router-link>
-      <router-link to="/profile">Профиль</router-link>
-    </div>
+    <router-link to="/">Главная</router-link>
+    <router-link v-if="userStore.isAuthenticated" to="/profile">Профиль</router-link>
+    <router-link v-if="userStore.isAuthenticated" to="/request">Заявка</router-link>
+    <router-link v-if="!userStore.isAuthenticated" to="/login">Вход</router-link>
+    <router-link v-if="!userStore.isAuthenticated" to="/register">Регистрация</router-link>
+    <button v-if="userStore.isAuthenticated" @click="logout">Выйти</button>
   </nav>
 </template>
 
-<script>
-export default {
-  name: "ClientNavbar"
-};
+<script setup>
+import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
+
+const userStore = useUserStore()
+const router = useRouter()
+
+const logout = async () => {
+  await userStore.logout()
+  router.push('/login')
+}
 </script>
 
 <style scoped>
 .navbar {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #0d6efd;
-  padding: 10px 20px;
-  color: white;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #2c3e50;
 }
-.logo {
-  font-weight: bold;
-  font-size: 1.2em;
+.navbar a, .navbar button {
   color: white;
   text-decoration: none;
-}
-.nav-links a {
-  margin-left: 20px;
-  color: white;
-  text-decoration: none;
-}
-.nav-links a.router-link-active {
-  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 </style>
