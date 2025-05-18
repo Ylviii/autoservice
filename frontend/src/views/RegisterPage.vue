@@ -1,15 +1,37 @@
-<script setup>
-import api from "../api.js";
+<template>
+  <div>
+    <h2>Регистрация</h2>
+    <form @submit.prevent="register">
+      <input v-model="form.username" placeholder="Имя пользователя" required />
+      <input v-model="form.password" type="password" placeholder="Пароль" required />
+      <button type="submit">Зарегистрироваться</button>
+    </form>
+  </div>
+</template>
 
-const registerUser = async () => {
-  try {
-    const response = await api.post("/register", {
-      username: "demo",
-      password: "123456",
-    });
-    console.log(response.data);
-  } catch (error) {
-    console.error("Ошибка регистрации:", error);
-  }
+<script>
+import { registerUser } from "@/api";
+
+export default {
+  name: "RegisterPage",
+  data() {
+    return {
+      form: {
+        username: "",
+        password: "",
+      },
+    };
+  },
+  methods: {
+    async register() {
+      try {
+        await registerUser(this.form);
+        alert("Регистрация прошла успешно!");
+        this.$router.push("/");
+      } catch (error) {
+        alert("Ошибка регистрации: " + error);
+      }
+    },
+  },
 };
 </script>
